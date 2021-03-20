@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <math.h>
 
 typedef unsigned float_bits;
 
@@ -27,7 +26,7 @@ int main(void)
         tmp = float_twice(f);
         if((2.0F * (*(float *)&f)) != *(float *)&tmp)
         {
-            // When f is 0x7F800001 (0 11111110 00000000000000000000001)
+            // When f is 0x7F000001 (0 11111110 00000000000000000000001)
             printf("%#x\n", f);
             break;
         }
