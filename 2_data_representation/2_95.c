@@ -38,9 +38,9 @@ float_bits float_half(float_bits f)
 
 int main(void)
 {
-    for(float_bits f = 0, tmp; f <= 0xFFFFFFFF; f++)
+    for(long f = 0, tmp; f <= 0xFFFFFFFF; f++)
     {
-        tmp = float_half(f);
+        tmp = float_half((float_bits)f);
         if(((*(float *)&f) / 2.0F) != *(float *)&tmp)
         {
             // When f is 0x7F800001 (0 11111111 00000000000000000000001)

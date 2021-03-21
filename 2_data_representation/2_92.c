@@ -19,9 +19,9 @@ float_bits float_negate(float_bits f)
 
 int main(void)
 {
-    for(float_bits f = 0, tmp; f <= 0xFFFFFFFF; f++)
+    for(long f = 0, tmp; f <= 0xFFFFFFFF; f++)
     {
-        tmp = float_negate(f);
+        tmp = float_negate((float_bits)f);
         if(-*(float *)&f != *(float *)&tmp)
         {
             // When f is 0x7F800001 (0 11111111 00000000000000000000001)

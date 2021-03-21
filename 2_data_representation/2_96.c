@@ -18,21 +18,17 @@ int float_f2i(float_bits f)
     {
         int tmp = exp - bias - 23;
         frac |= 0x800000;
-        if(!sign)
-            return (tmp < 0 ? frac >> abs(tmp) : frac << tmp);
-        else
-        {
-            tmp < 0 ? (frac >>= abs(tmp)) + 1 : (frac <<= tmp);
-            return ~(frac) + 1;
-        }
+        tmp < 0 ? frac >>= abs(tmp) : (frac <<= tmp);
+
+        return sign ? ~(frac) + 1 : frac;
     }
 }
 
 int main(void)
 {
-    for(float_bits f = 0; f <= 0xFF800001; f++)
+    for(long f = 0; f <= 0xFFFFFFFF; f++)
     {
-        int tmp = float_f2i(f);
+        int tmp = float_f2i((float_bits)f);
         if((int)*(float *)&f != tmp)
         {
             printf("%#x\n", f);

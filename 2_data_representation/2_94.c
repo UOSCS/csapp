@@ -21,9 +21,9 @@ float_bits float_twice(float_bits f)
 
 int main(void)
 {
-    for(float_bits f = 0, tmp; f <= 0xFFFFFFFF; f++)
+    for(long f = 0, tmp; f <= 0xFFFFFFFF; f++)
     {
-        tmp = float_twice(f);
+        tmp = float_twice((float_bits)f);
         if((2.0F * (*(float *)&f)) != *(float *)&tmp)
         {
             // When f is 0x7F000001 (0 11111110 00000000000000000000001)
