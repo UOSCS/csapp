@@ -170,7 +170,7 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return ;
+  return 1;
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -191,7 +191,7 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  return (~x + 1);
 }
 //3
 /* 
@@ -204,7 +204,13 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  int is_second_byte_3 = !((x >> 4) ^ 3);
+  int important_3_bits_of_first_byte = (x & 15) >> 1;
+  int is_first_byte_10 = !(important_3_bits_of_first_byte ^ 5);
+  int is_first_byte_12 = !(important_3_bits_of_first_byte ^ 6);
+  int is_first_byte_14 = !(important_3_bits_of_first_byte ^ 7);
+
+  return is_second_byte_3 & !(is_first_byte_10 | is_first_byte_12 | is_first_byte_14);
 }
 /* 
  * conditional - same as x ? y : z 
