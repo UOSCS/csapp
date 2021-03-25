@@ -220,7 +220,9 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  int on_off = ~!x + 1;
+
+  return (~on_off & y) | (on_off & z);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -230,6 +232,7 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
+  
   return 2;
 }
 //4
