@@ -170,7 +170,7 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return 1;
+  return !!(~0 ^ x) & !(~x ^ (x + 1));
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -181,7 +181,9 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return !((x + x) ^ ~1);
+  int template = 0xAA | (0xAA << 8) | (0xAA << 16) | (0xAA << 24);
+
+  return !((x & template) ^ template);
 }
 /* 
  * negate - return -x 
@@ -232,8 +234,13 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  
-  return 2;
+  int int_min = 1 << 31;
+  int y_minus_x = y + (~x + 1);
+  int is_y_minus_x_neg = (y_minus_x & int_min) >> 31;
+  int x_pos_and_y_neg = ((y & int_min) >> 31) & !(x & int_min);
+  int y_pos_and_x_neg = !(y & int_min) & ((x & int_min) >> 31);
+
+  return !x_pos_and_y_neg & (y_pos_and_x_neg | (is_y_minus_x_neg & 0) | (!is_y_minus_x_neg & 1));
 }
 //4
 /* 
@@ -245,7 +252,7 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return 2;
+  return (x + (~0 + (~x + 1))) + 1;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
@@ -275,7 +282,19 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  unsigned sign = uf >> 31;
+  unsigned exp = (uf >> 23) & 0xFF;
+  unsigned frac = uf & 0x7FFFFF;
+
+  if(exp == 0xFF)
+      return uf;
+  else
+  {
+      if(!exp)
+          return (sign << 31) | (frac << 1);
+      else
+          return (sign << 31) | ((++exp) << 23) | frac;
+  }
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
@@ -290,7 +309,23 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  unsigned sign = uf >> 31;
+  unsigned exp = (uf >> 23) & 0xFF;
+  unsigned frac = uf & 0x7FFFFF;
+  unsigned bias = 127;
+
+  if(exp < bias)
+      return 0;
+  else if(exp > bias + 30)
+      return 0x80000000;
+  else
+  {
+      int tmp = exp - bias - 23;
+      frac |= 0x800000;
+      tmp < 0 ? frac >>= (~tmp + 1) : (frac <<= tmp);
+
+      return sign ? ~(frac) + 1 : frac;
+  }
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
