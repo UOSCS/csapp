@@ -240,7 +240,7 @@ int isLessOrEqual(int x, int y) {
   int x_pos_and_y_neg = ((y & int_min) >> 31) & !(x & int_min);
   int y_pos_and_x_neg = !(y & int_min) & ((x & int_min) >> 31);
 
-  return !x_pos_and_y_neg & (y_pos_and_x_neg | (is_y_minus_x_neg & 0) | (!is_y_minus_x_neg & 1));
+  return !x_pos_and_y_neg & (y_pos_and_x_neg | !is_y_minus_x_neg);
 }
 //4
 /* 
@@ -252,7 +252,8 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return (x + (~0 + (~x + 1))) + 1;
+  
+  return 2;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
@@ -341,5 +342,14 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+  int bias = 127;
+
+  if(x < 1 - bias - 23)
+    return 0;
+  else if(x < 1 - bias)
+    return 1 << (23 - (1 - bias - x));
+  else if(x < 0xFF - bias)
+    return (x + bias) << 23;
+  else
+    return 0xFF << 23;
 }
